@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Дело о Счастье — Спор Алуа vs Нурали</title>
-<meta name="description" content="Игровое поздравление: спор Алуа vs Нурали под присмотром Судьи. Победа — это поздравление и подарок ❤️">
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='64' width='64'%3E%3Ctext y='48' x='6' font-size='48'%3E⚖️%3C/text%3E%3C/svg%3E">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Дело о Счастье — Спор Алуа vs Нурали (v2.3)</title>
+<meta name="description" content="Игровое поздравление: спор Алуа vs Нурали под присмотром Судьи. Победа — поздравление и подарок ❤️" />
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='64' width='64'%3E%3Ctext y='48' x='6' font-size='48'%3E🎉%3C/text%3E%3C/svg%3E" />
 <style>
   :root{
     --ink:#182435; --muted:#5c6a79; --line:#e4e9ef; --bg:#f7f9fb;
     --brand:#0b6cff; --ok:#2ea44f; --warn:#ffaf38; --bad:#e45757;
+    --card:#ffffff;
   }
   *{box-sizing:border-box}
   body{margin:0;background:linear-gradient(#fdfcf9,var(--bg));color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  .wrap{max-width:960px;margin:32px auto;padding:0 16px}
+  .wrap{max-width:980px;margin:28px auto 60px;padding:0 16px}
   header.card{text-align:center}
   h1{font-family:Merriweather,serif;margin:0 0 6px}
-  .lead{color:var(--muted);margin:0 0 18px}
-  .card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 26px rgba(18,38,63,.06);padding:18px}
+  .lead{color:var(--muted);margin:0 0 12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 26px rgba(18,38,63,.06);padding:18px}
   .row{display:flex;gap:10px;flex-wrap:wrap}
   .btn{appearance:none;border:0;background:var(--brand);color:#fff;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;transition:.18s;box-shadow:0 6px 18px rgba(11,108,255,.18)}
   .btn:hover{transform:translateY(-1px)}
   .btn.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand);box-shadow:none}
   .btn.warn{background:var(--warn);color:#1b1405}
   .btn.success{background:var(--ok)}
-  .btn.bad{background:var(--bad)}
   .hint{color:var(--muted);font-size:.95rem}
   .divider{height:1px;background:var(--line);margin:14px 0}
   .scene{display:none}
@@ -33,20 +33,40 @@
   @keyframes fade{from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)}}
   .progress{height:12px;background:#eef2f7;border:1px solid var(--line);border-radius:999px;overflow:hidden}
   .bar{height:100%;width:0;background:linear-gradient(90deg,var(--brand),#43a1ff);transition:width .45s ease}
-  .judge, .log{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
-  .say{padding:8px 10px;border-left:3px solid #dde4ec;border-radius:8px;margin:6px 0}
-  .role{font-weight:700;margin-right:6px;color:#0b3b6c}
-  .choices{display:grid;grid-template-columns:repeat(1,minmax(220px,1fr));gap:10px}
-  @media (min-width:720px){ .choices{grid-template-columns:repeat(3,1fr)} }
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.25);font-size:.95rem;z-index:999;opacity:0}
+  .type{white-space:pre-wrap;line-height:1.6;margin-top:12px}
+
+  /* блок раунда */
+  .round-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+  .round-indicator{font-weight:700;color:#0b3b6c}
+  .arena{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:840px){ .arena{grid-template-columns:1fr 1fr} }
+  .avatar{
+    display:flex; align-items:center; gap:12px;
+    background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px;
+  }
+  .avatar img{
+    width:72px; height:72px; object-fit:cover; border-radius:12px; border:1px solid var(--line);
+    background:#f2f4f7;
+  }
+  .bubble{padding:10px 12px;border-left:3px solid #dde4ec;border-radius:8px;background:#fff}
+  .choices{display:grid;grid-template-columns:1fr;gap:10px}
+  @media(min-width:720px){ .choices{grid-template-columns:repeat(3,1fr)} }
   .choice{border:1.5px solid var(--line);border-radius:12px;padding:12px;background:#fff;cursor:pointer;transition:.15s;text-align:left}
   .choice:hover{transform:translateY(-1px)}
   .choice.good{border-color:var(--ok);background:#f1fbf4}
   .choice.bad{border-color:#ffd6d6;background:#fff7f7}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.25);font-size:.95rem;z-index:999;opacity:0}
-  .type{white-space:pre-wrap;line-height:1.6;margin-top:12px}
+
   /* сердечки */
   .heart{position:fixed;bottom:-40px;font-size:22px;animation:float 6s linear forwards;pointer-events:none}
   @keyframes float{from{transform:translateY(0)} to{transform:translateY(-120vh)}}
+
+  /* плавающая кнопка звука (если автоплей заблокирован) */
+  .sound-fab{
+    position:fixed; right:16px; bottom:16px; z-index:888;
+    background:#0f172a; color:#fff; border:0; border-radius:999px; padding:10px 14px; cursor:pointer;
+    box-shadow:0 10px 24px rgba(0,0,0,.25); display:none;
+  }
 </style>
 </head>
 <body>
@@ -64,25 +84,40 @@
     </div>
   </header>
 
-  <!-- СЦЕНА 1: вступление -->
+  <!-- СЦЕНА 1 -->
   <section id="s1" class="scene active">
     <div class="card">
-      <div class="log" id="log1" aria-live="polite">
-        <div class="say"><span class="role">Судья:</span> Объявляю слушание открытым. Предмет спора: «Чья позиция сильнее — логика Нурали или очарование Алуа?»</div>
-        <div class="say"><span class="role">Нурали:</span> Готов выдвигать доводы. Прошу соблюдать процессуальный кофе-порядок.</div>
-        <div class="say"><span class="role">Судья:</span> Алуа, ваша задача — выбирать лучший контраргумент из предложенных. Удачный ответ повышает шкалу победы.</div>
-      </div>
+      <div class="bubble"><b>Судья:</b> Объявляю слушание открытым. Алуа, вам предстоит выбирать лучшие контраргументы. Удачные ответы ускоряют победу.</div>
       <div class="divider"></div>
-      <p class="hint">Нажмите «Начать спор», чтобы перейти к раундам.</p>
+      <div class="hint">Нажмите «Начать спор», музыка включится автоматически (если браузер разрешит). Если звука нет — появится кнопка «Включить звук» внизу.</div>
     </div>
   </section>
 
-  <!-- СЦЕНА 2: раунды -->
+  <!-- СЦЕНА 2 — раунды -->
   <section id="s2" class="scene">
     <div class="card">
-      <div class="judge" id="roundBox">
-        <!-- раунд вставится скриптом -->
+      <div class="round-top">
+        <div id="roundIndicator" class="round-indicator">Раунд 1 из 4</div>
+        <div class="hint" id="miniHint">Выберите лучший контраргумент — Судья оценит.</div>
       </div>
+
+      <div class="arena" id="arena">
+        <!-- левая колонка: Нурали (довод) -->
+        <div class="avatar" id="nuralyBox">
+          <img id="nuralyImg" alt="Нурали" />
+          <div class="bubble" id="nuralyLine"></div>
+        </div>
+
+        <!-- правая колонка: Алуа (ответ) -->
+        <div class="avatar" id="aluaBox">
+          <img id="aluaImg" alt="Алуа" />
+          <div class="bubble">
+            <div class="hint">Выберите ответ:</div>
+            <div class="choices" id="choices"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="divider"></div>
       <div class="row" style="justify-content:space-between">
         <button id="prevBtn" class="btn ghost" disabled>← Назад</button>
@@ -91,13 +126,11 @@
     </div>
   </section>
 
-  <!-- СЦЕНА 3: финал -->
+  <!-- СЦЕНА 3 — финал -->
   <section id="s3" class="scene">
     <div class="card">
-      <div class="log" id="finalLog">
-        <div class="say"><span class="role">Судья:</span> Шкала достигла 100%. Дело решено: <b>Победа Алуа</b> 🎉</div>
-        <div class="say"><span class="role">Нурали:</span> Сдаюсь… и с радостью оглашаю поздравление.</div>
-      </div>
+      <div class="bubble"><b>Судья:</b> Шкала достигла 100%. Дело решено: <b>Победа Алуа</b> 🎉</div>
+      <div class="bubble"><b>Нурали:</b> Сдаюсь… и с радостью оглашаю поздравление.</div>
       <div class="divider"></div>
       <div class="row" style="justify-content:flex-start">
         <button id="giftBtn" class="btn success">🎁 Получить поздравление</button>
@@ -110,97 +143,157 @@
 
 <!-- libs -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<!-- фоновая музыка -->
+<audio id="bgm" src="" preload="auto" loop playsinline></audio>
+<button id="soundFab" class="sound-fab">🔊 Включить звук</button>
+
 <script>
-  // ===== Данные раундов =====
+  /*****  НАСТРОЙКИ  *****/
+  // ВСТАВЬ сюда ссылку на джазовый сакс-лоуп (royalty-free mp3)
+  // Если оставишь пустым — появится кнопка "Включить звук", которая включит без src (ничего не заиграет).
+  const AUDIO_SRC = ""; // пример: "https://cdn.pixabay.com/download/audio/2021/09/01/audio_foobar.mp3?filename=jazz-sax-loop.mp3"
+
+  // Аватарки (Google Drive -> direct view)
+  const IMG = {
+    nuraly: {
+      calm: "https://drive.google.com/uc?export=view&id=1vJJHBM4EslrBSaHF0yPM2bcqYroOEGWz",
+      confident: "https://drive.google.com/uc?export=view&id=1sncAh6T6SgOiq_0wAGkKuqIzBQTUJzjB",
+      surprised: "https://drive.google.com/uc?export=view&id=1BhEXGEA86BJf51z55Eo0W1Q1OYQIHKvv",
+      happy: "https://drive.google.com/uc?export=view&id=1l7a5hJ608lRkk8AGv_fOCN4pKM950AoQ"
+    },
+    alua: {
+      focus: "https://drive.google.com/uc?export=view&id=1Pxon5HEsWp4RQkRypyor9hmYr-YtKKBX",
+      smile: "https://drive.google.com/uc?export=view&id=1FO-Ej3HeoAh46z-yixHlslkxu6eQc2Fl",
+      laugh: "https://drive.google.com/uc?export=view&id=1GHLx1slIVQHoEAkLGUK5eDgPZrFwKoYV",
+      proud: "https://drive.google.com/uc?export=view&id=1yurKfJRJqncdOFolPmHBRKqLXyGnTQI6"
+    }
+  };
+
+  // Раунды (можно редактировать тексты и «good»)
   const ROUNDS = [
     {
-      nuraly: "Мой довод №1: цифры не врут. Логика — мой верный союзник.",
+      nuraly: "Довод №1: цифры не врут. Мои модели на моей стороне.",
+      nFace: "confident",
       options: [
-        { text: "Моя улыбка лучезарна — логика здесь просто отдыхает.", good: true, delta: 25 },
-        { text: "Опровергну цифры… пирожком? (Не лучший план)", good: false, delta: 8 },
-        { text: "А судья в курсе, что я милее ваших формул?", good: false, delta: 12 },
+        { text: "Моя улыбка лучезарна — и сегодня она главнее цифр.", good: true, delta: 25, aFaceGood: "smile", aFaceBad: "focus" },
+        { text: "Опровергну цифры тортом. Много тортом.", good: false, delta: 10, aFaceGood: "smile", aFaceBad: "focus" },
+        { text: "Судья, а вы записали, какая я милая?", good: false, delta: 12, aFaceGood: "laugh", aFaceBad: "focus" }
       ],
       judgeGood: "Аргумент принят! Уровень очарования растёт.",
-      judgeBad:  "Хм… забавно, но слабовато. Немного очков за креатив."
+      judgeBad:  "Симпатично, но неубедительно. +чуть-чуть за креатив."
     },
     {
-      nuraly: "Мой довод №2: факты упрямы — дедлайны не ждут.",
+      nuraly: "Довод №2: факты упрямы — дедлайны не ждут.",
+      nFace: "calm",
       options: [
-        { text: "Счастье важнее дедлайнов. Сегодня праздник — факты подождут.", good: true, delta: 25 },
-        { text: "Упрямство фактов лечится тортом. Много тортом.", good: false, delta: 10 },
-        { text: "Прошу приобщить кофе к материалам дела.", good: false, delta: 12 },
+        { text: "Счастье важнее дедлайнов. Сегодня праздник — факты подождут.", good: true, delta: 25, aFaceGood: "smile", aFaceBad: "focus" },
+        { text: "Упрямство фактов лечится кофе-брейком.", good: false, delta: 12, aFaceGood: "smile", aFaceBad: "focus" },
+        { text: "Прошу приобщить вкусный пирожок к делу.", good: false, delta: 8, aFaceGood: "laugh", aFaceBad: "focus" }
       ],
       judgeGood: "Принято! У праздника есть процессуальный приоритет.",
-      judgeBad:  "Симпатично, но неубедительно. +чуть-чуть за юмор."
+      judgeBad:  "Забавно, но оснований маловато."
     },
     {
-      nuraly: "Мой довод №3: статистика показывает…",
+      nuraly: "Довод №3: статистика показывает…",
+      nFace: "confident",
       options: [
-        { text: "Моя статистика простая: люди рядом со мной чаще улыбаются ☺️", good: true, delta: 25 },
-        { text: "Статистика — это когда много цифр и мало счастья.", good: false, delta: 10 },
-        { text: "Если что — у меня невероятно убедительный котик.", good: false, delta: 12 },
+        { text: "Моя статистика простая: рядом со мной чаще улыбаются ☺️", good: true, delta: 25, aFaceGood: "laugh", aFaceBad: "focus" },
+        { text: "Статистика — это когда много цифр и мало счастья.", good: false, delta: 10, aFaceGood: "smile", aFaceBad: "focus" },
+        { text: "У меня есть неопровержимый котик… теоретически.", good: false, delta: 12, aFaceGood: "smile", aFaceBad: "focus" }
       ],
-      judgeGood: "Это серьёзно. Показатель улыбаемости никто не отменял.",
-      judgeBad:  "Мило, но котик — не универсальный аргумент. +немного."
+      judgeGood: "Показатель улыбаемости никто не отменял.",
+      judgeBad:  "Котик мил, но мало доказателен."
     },
     {
-      nuraly: "Мой довод №4: итоговая модель предсказывает 99.9% моей правоты.",
+      nuraly: "Довод №4: итоговая модель даёт 99.9% моей правоты.",
+      nFace: "confident",
       options: [
-        { text: "Оставшиеся 0.1% — это моя магия. И сегодня — мой день.", good: true, delta: 25 },
-        { text: "Предсказываю кофе-брейк — прямо сейчас.", good: false, delta: 10 },
-        { text: "Вы когда-нибудь спорили с моими ямочками на щеках?", good: false, delta: 12 },
+        { text: "Оставшиеся 0.1% — моя магия. И сегодня — мой день.", good: true, delta: 25, aFaceGood: "proud", aFaceBad: "focus" },
+        { text: "Предсказываю: кофе — в мою пользу.", good: false, delta: 10, aFaceGood: "smile", aFaceBad: "focus" },
+        { text: "Смеюсь в лицо вашим алгоритмам — по-доброму.", good: false, delta: 12, aFaceGood: "laugh", aFaceBad: "focus" }
       ],
-      judgeGood: "Неоспоримо. Магия 0.1% закрывает спор.",
-      judgeBad:  "Забавно, но мало оснований. Немного баллов — за очарование."
+      judgeGood: "Магия 0.1% закрывает спор.",
+      judgeBad:  "Забавно, но не критично для дела."
     }
   ];
 
-  // ===== Состояние =====
+  /*****  СОСТОЯНИЕ  *****/
   let roundIndex = 0;
   let progress = 0;
-  let roundAnswered = false;
+  let answered = false;
   let bribeCooldown = false;
 
-  // ===== DOM =====
+  /*****  DOM  *****/
   const s1 = document.getElementById('s1');
   const s2 = document.getElementById('s2');
   const s3 = document.getElementById('s3');
   const bar = document.getElementById('bar');
   const startBtn = document.getElementById('startBtn');
   const bribeBtn = document.getElementById('bribeBtn');
-  const roundBox = document.getElementById('roundBox');
+  const roundIndicator = document.getElementById('roundIndicator');
+  const arena = document.getElementById('arena');
+  const nuralyImg = document.getElementById('nuralyImg');
+  const nuralyLine = document.getElementById('nuralyLine');
+  const aluaImg = document.getElementById('aluaImg');
+  const choicesBox = document.getElementById('choices');
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
+
   const giftBtn = document.getElementById('giftBtn');
   const replayBtn = document.getElementById('replayBtn');
   const giftText = document.getElementById('giftText');
 
-  // ===== Навигация =====
-  function show(el){ [s1,s2,s3].forEach(x=>x.classList.remove('active')); el.classList.add('active'); }
-  function setProgress(p){ progress = Math.max(0, Math.min(100, p)); bar.style.width = progress + '%'; if(progress<100) bribeBtn.style.display='inline-block'; }
-  function toast(msg){
-    const el = document.createElement('div'); el.className='toast'; el.textContent=msg; document.body.appendChild(el);
-    requestAnimationFrame(()=>{ el.style.transition='opacity .2s'; el.style.opacity='1'; });
-    setTimeout(()=>{ el.style.opacity='0'; setTimeout(()=>el.remove(), 200); }, 1800);
+  const bgm = document.getElementById('bgm');
+  const soundFab = document.getElementById('soundFab');
+
+  /*****  АУДИО  *****/
+  if (AUDIO_SRC) bgm.src = AUDIO_SRC;
+  function tryPlayAudio(){
+    if (!AUDIO_SRC) { soundFab.style.display = 'inline-flex'; return; }
+    bgm.volume = 0.35;
+    bgm.play().then(()=>{
+      soundFab.style.display = 'none';
+    }).catch(()=>{
+      soundFab.style.display = 'inline-flex';
+    });
   }
+  soundFab.addEventListener('click', ()=>{ tryPlayAudio(); });
+
+  /*****  НАВИГАЦИЯ  *****/
+  function show(el){
+    [s1,s2,s3].forEach(x=>x.classList.remove('active'));
+    el.classList.add('active');
+    // автопрокрутка к началу сцены
+    const top = el.getBoundingClientRect().top + window.scrollY - 12;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+  function setProgress(p){ progress = Math.max(0, Math.min(100, p)); bar.style.width = progress + '%'; if(progress<100) bribeBtn.style.display='inline-block'; }
 
   startBtn.addEventListener('click', ()=>{
     show(s2);
     setProgress(5);
+    roundIndex = 0;
     renderRound();
+    tryPlayAudio();
   });
 
   prevBtn.addEventListener('click', ()=>{
-    if(roundIndex>0){ roundIndex--; renderRound(true); }
+    if(roundIndex>0){
+      roundIndex--;
+      setProgress(progress - 5);
+      renderRound(true);
+    }
   });
 
   nextBtn.addEventListener('click', ()=>{
     if(progress>=100){ finish(); return; }
-    if(roundIndex < ROUNDS.length-1){ roundIndex++; renderRound(); }
-    else {
-      // все раунды сыграны — если ещё нет 100%, мягко подтолкнём к финалу
+    if(roundIndex < ROUNDS.length-1){
+      roundIndex++;
+      renderRound();
+    } else {
       if(progress>=90){ setProgress(100); finish(); }
-      else { toast("Ещё немного очков — и победа будет за Алуа!"); }
+      else toast("Ещё чуть-чуть — и победа будет за Алуа!");
     }
   });
 
@@ -209,57 +302,75 @@
     bribeCooldown = true;
     setTimeout(()=> bribeCooldown=false, 3000);
     setProgress(progress + 20);
-    toast("Судья: «Хм… кофе убедителен. Пересматриваю оценку в пользу Алуа 😌»");
+    toast("Судья: «Кофе принят. Пересматриваю оценку в пользу Алуа 😌»");
+    nuralySwap("surprised");
+    aluaSwap("smile");
     if(progress>=100) finish();
   });
 
-  // ===== Рендер раунда =====
+  /*****  РЕНДЕР РАУНДА  *****/
   function renderRound(backward=false){
     const r = ROUNDS[roundIndex];
-    roundAnswered = false;
+    answered = false;
     nextBtn.disabled = true;
     prevBtn.disabled = (roundIndex===0);
+    roundIndicator.textContent = `Раунд ${roundIndex+1} из ${ROUNDS.length}`;
 
-    roundBox.innerHTML = `
-      <div class="say"><span class="role">Нурали:</span> ${r.nuraly}</div>
-      <div class="divider"></div>
-      <div class="hint">Алуа, выберите ответ:</div>
-      <div class="choices" id="choices"></div>
-    `;
-    const choices = document.getElementById('choices');
-    r.options.forEach((opt, i)=>{
+    // аватарки по умолчанию для начала раунда
+    nuralySwap(r.nFace || "confident");
+    aluaSwap("focus");
+
+    nuralyLine.textContent = r.nuraly;
+
+    choicesBox.innerHTML = "";
+    r.options.forEach((opt)=>{
       const btn = document.createElement('button');
-      btn.className='choice';
+      btn.className = 'choice';
       btn.innerHTML = `<b>${opt.text}</b>`;
       btn.addEventListener('click', ()=>{
-        if(roundAnswered) return;
-        roundAnswered = true;
-        btn.classList.add(opt.good?'good':'bad');
+        if (answered) return;
+        answered = true;
+        const good = !!opt.good;
+        btn.classList.add(good ? 'good' : 'bad');
 
-        // реакция судьи + очки
-        if(opt.good){
-          setProgress(progress + opt.delta);
-          toast(r.judgeGood);
+        // реакции и очки
+        if(good){
+          setProgress(progress + (opt.delta||25));
+          toast(r.judgeGood || "Аргумент принят!");
           ding(true);
+          aluaSwap(opt.aFaceGood || "smile");
+          nuralySwap("happy");
         } else {
-          setProgress(progress + opt.delta);
-          toast(r.judgeBad);
+          setProgress(progress + (opt.delta||10));
+          toast(r.judgeBad || "Симпатично, но слабовато.");
           ding(false);
+          aluaSwap(opt.aFaceBad || "focus");
+          nuralySwap("surprised");
         }
-        nextBtn.disabled = false;
 
+        nextBtn.disabled = false;
         if(progress>=100){ finish(); }
       });
-      choices.appendChild(btn);
+      choicesBox.appendChild(btn);
     });
 
-    // при возврате назад — небольшой откат прогресса (мягкий)
-    if(backward){ setProgress(progress - 5); }
+    if(backward){ setProgress(progress - 3); }
   }
 
-  // ===== Финал =====
+  function nuralySwap(face){
+    const src = IMG.nuraly[face] || IMG.nuraly.calm;
+    nuralyImg.src = src; nuralyImg.alt = `Нурали — ${face}`;
+  }
+  function aluaSwap(face){
+    const src = IMG.alua[face] || IMG.alua.focus;
+    aluaImg.src = src; aluaImg.alt = `Алуа — ${face}`;
+  }
+
+  /*****  ФИНАЛ  *****/
   function finish(){
     show(s3);
+    // торжествующая Алуа
+    aluaImg.src = IMG.alua.proud;
     fireConfetti();
     setTimeout(()=>fireConfetti(), 400);
     setTimeout(()=>fireConfetti(), 900);
@@ -283,11 +394,12 @@
 
   replayBtn.addEventListener('click', ()=>{
     // сброс
-    roundIndex = 0; setProgress(0); giftBtn.disabled = false; giftText.textContent = '';
+    progress = 0; setProgress(0);
+    giftBtn.disabled = false; giftText.textContent = '';
     show(s1);
   });
 
-  // ===== Эффекты =====
+  /*****  ЭФФЕКТЫ И УТИЛИТЫ  *****/
   function fireConfetti(){
     confetti({ particleCount: 90, spread: 70, startVelocity:45, origin:{ y: 0.7 } });
   }
@@ -310,7 +422,11 @@
       await new Promise(r=>setTimeout(r, 18));
     }
   }
-  // маленький звуковой фидбек через WebAudio (без внешних файлов)
+  function toast(msg){
+    const el = document.createElement('div'); el.className='toast'; el.textContent=msg; document.body.appendChild(el);
+    requestAnimationFrame(()=>{ el.style.transition='opacity .2s'; el.style.opacity='1'; });
+    setTimeout(()=>{ el.style.opacity='0'; setTimeout(()=>el.remove(), 200); }, 1800);
+  }
   function ding(success=true){
     try{
       const ctx = new (window.AudioContext||window.webkitAudioContext)();
@@ -318,13 +434,17 @@
       o.type = success ? 'triangle':'sawtooth';
       o.frequency.value = success ? 820 : 320;
       g.gain.value = 0.00001; g.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime);
-      o.connect(g); g.connect(ctx.destination);
-      o.start();
+      o.connect(g); g.connect(ctx.destination); o.start();
       g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime+0.01);
       g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+0.25);
       o.stop(ctx.currentTime+0.3);
-    }catch(e){ /* тихий фолбэк */ }
+    }catch(e){}
   }
+
+  // попытка автоплея сразу
+  document.addEventListener('DOMContentLoaded', ()=>{
+    tryPlayAudio();
+  });
 </script>
 </body>
 </html>

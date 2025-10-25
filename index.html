@@ -1,225 +1,379 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ВЕРХОВНЫЙ СУД СЧАСТЬЯ</title>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@600&family=Roboto+Mono&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background: linear-gradient(#fdfcf9, #f5f8fa);
-      color: #1c2c3b;
-      font-family: 'Merriweather', serif;
-      margin: 0;
-      text-align: center;
-      overflow-x: hidden;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Court of Happiness — Interactive</title>
 
-    header {
-      margin-top: 40px;
-    }
+<!-- Meta / Preview (можно оставить) -->
+<meta name="title" content="⚖️ The Court of Happiness — Interactive">
+<meta name="description" content="Мини-игра-поздравление: Судья Алуа, свидетель Нурали и вердикт — счастье и кофе навсегда.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="⚖️ Суд счастья — интерактив">
+<meta property="og:description" content="Игровое поздравление для Алуа от Нурали.">
+<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Emblem_of_Kazakhstan_gold.svg/64px-Emblem_of_Kazakhstan_gold.svg.png">
 
-    header img {
-      width: 100px;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@600&family=Inter:wght@400;600&family=Roboto+Mono&display=swap" rel="stylesheet">
 
-    h1 {
-      margin: 10px 0 5px;
-      font-size: 2.3rem;
-      letter-spacing: 0.5px;
-    }
+<style>
+  :root {
+    --blue:#005fa3; --bg:#f7f9fb; --ink:#203041; --line:#d9e2ea; --gold:#caa04a; --ok:#2ea44f; --soft:#eef4f9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin:0; background:linear-gradient(#fdfcf9, var(--bg));
+    color:var(--ink); font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  }
+  header { text-align:center; padding:28px 16px 8px; }
+  header img { width:88px; filter: drop-shadow(0 1px 0 rgba(0,0,0,.1)); }
+  h1 { font-family:Merriweather, serif; margin:10px 0 2px; letter-spacing:.3px; }
+  h2 { margin:4px 0 0; font-weight:500; color:var(--blue); }
+  .sub { font-family:"Roboto Mono", monospace; font-size:.95rem; color:#526476; }
 
-    h2 {
-      color: #005fa3;
-      font-weight: normal;
-      margin-bottom: 5px;
-    }
+  .wrap { max-width:880px; margin:20px auto 64px; padding:0 16px; }
+  .card {
+    background:#fff; border:1.5px solid var(--line); border-radius:14px; padding:20px;
+    box-shadow:0 8px 24px rgba(31,70,88,.06);
+  }
 
-    p {
-      font-family: 'Roboto Mono', monospace;
-    }
+  .progress {
+    height:10px; background:var(--soft); border-radius:999px; overflow:hidden; margin:12px 0 20px;
+    border:1px solid var(--line);
+  }
+  .bar { height:100%; width:0%; background:linear-gradient(90deg, var(--blue), #00a3ff); transition:width .6s ease; }
 
-    button {
-      background: #005fa3;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 12px 28px;
-      font-family: 'Roboto Mono', monospace;
-      margin-top: 25px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
+  .btn {
+    appearance:none; border:0; background:var(--blue); color:#fff; padding:12px 18px;
+    border-radius:10px; cursor:pointer; font-weight:600; box-shadow:0 4px 12px rgba(0,95,163,.2); transition:.2s;
+  }
+  .btn:hover { transform:translateY(-1px); }
+  .btn.ghost { background:#fff; color:var(--blue); border:1.5px solid var(--blue); }
+  .btn.row { width:100%; text-align:left; margin:8px 0; display:flex; align-items:center; gap:10px; }
+  .kbd { background:#0f172a; color:#fff; padding:2px 8px; border-radius:6px; font-family:"Roboto Mono", monospace; font-size:.85rem; }
 
-    button:hover {
-      background: #007acc;
-    }
+  .dialog { min-height:110px; line-height:1.6; }
+  .say { margin:8px 0; padding:10px 12px; border-left:3px solid var(--line); background:#fff; border-radius:8px; }
+  .role { font-weight:700; color:#0f3b5e; margin-right:6px; }
+  .hint { font-size:.9rem; color:#5b6b7a; }
 
-    #dialogue {
-      width: 80%;
-      max-width: 700px;
-      margin: 40px auto;
-      text-align: left;
-      white-space: pre-line;
-      font-family: 'Roboto Mono', monospace;
-      display: none;
-      animation: fadeIn 1s ease-in-out;
-    }
+  .flex { display:flex; gap:16px; flex-wrap:wrap; }
+  .half { flex:1 1 340px; }
+  .panel { background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:16px; }
 
-    #chartContainer {
-      display: none;
-      margin-top: 40px;
-    }
+  .evidence-grid {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:8px;
+  }
+  .ev {
+    user-select:none; text-align:center; border:1.5px dashed var(--line); padding:12px; border-radius:10px;
+    cursor:pointer; background:#fbfdff; transition:.15s;
+  }
+  .ev.found { border-color:var(--ok); background:#f1fbf4; transform:scale(1.02); }
+  .ev small { display:block; color:#778899; font-size:.8rem; }
 
-    canvas {
-      max-width: 500px;
-    }
+  .verdict {
+    display:none; margin-top:14px; background:#fff; border:2px solid var(--line); border-radius:12px; padding:22px;
+  }
+  .verdict h3 { margin:0 0 8px; font-family:Merriweather, serif; }
+  .seal { text-align:right; font-style:italic; color:#4b5d6d; }
 
-    #verdict {
-      display: none;
-      margin: 60px auto;
-      width: 85%;
-      max-width: 650px;
-      background: #fff;
-      border: 2px solid #cfcfcf;
-      border-radius: 10px;
-      padding: 30px;
-      text-align: left;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      line-height: 1.6;
-    }
+  .row-actions { display:flex; gap:10px; flex-wrap:wrap; margin:8px 0 2px; }
+  .note { font-size:.9rem; color:#5b6b7a; margin-top:4px; }
 
-    .seal {
-      text-align: right;
-      margin-top: 30px;
-      font-style: italic;
-    }
+  /* финальный подарок */
+  .gift {
+    display:none; text-align:center; padding:12px; margin-top:10px;
+  }
+  .type { font-family:"Roboto Mono", monospace; white-space:pre-wrap; text-align:left; margin:18px auto; max-width:680px; }
 
-    .signature {
-      font-family: 'Merriweather', serif;
-      font-size: 1.1rem;
-    }
-
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-  </style>
+  /* плавающие сердечки */
+  .heart { position:fixed; bottom:-40px; font-size:22px; animation:float 6s linear forwards; pointer-events:none; }
+  @keyframes float {
+    from { transform:translateY(0) translateX(0) rotate(0deg); opacity:1; }
+    to   { transform:translateY(-120vh) translateX(40px) rotate(20deg); opacity:0; }
+  }
+</style>
 </head>
-
 <body>
-  <header>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Emblem_of_Kazakhstan_gold.svg/1200px-Emblem_of_Kazakhstan_gold.svg.png" alt="Kazakhstan Emblem">
-    <h1>ВЕРХОВНЫЙ СУД СЧАСТЬЯ</h1>
-    <h2>Дело №2025-10-25: Народ против Скучных Дней Рождения</h2>
-    <p>Председательствующий судья: <strong>Алуа</strong><br> Свидетель (Data Scientist): <strong>Нурали</strong></p>
-  </header>
+<header>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Emblem_of_Kazakhstan_gold.svg/256px-Emblem_of_Kazakhstan_gold.svg.png" alt="Emblem">
+  <h1>THE COURT OF HAPPINESS</h1>
+  <h2>Дело №2025-10-25: «Народ против скучных Дней Рождения»</h2>
+  <div class="sub">Председательствующая судья: <b>Алуа</b> • Свидетель-эксперт (Data Science): <b>Нурали</b></div>
+</header>
 
-  <button id="startBtn">Начать заседание ⚖️</button>
-
-  <div id="dialogue"></div>
-
-  <div id="chartContainer">
-    <canvas id="chart"></canvas>
-    <button id="verdictBtn">Огласить приговор 📜</button>
-  </div>
-
-  <div id="verdict">
-    <h3>⚖️ ОФИЦИАЛЬНЫЙ ПРИГОВОР</h3>
-    <p>
-      Руководствуясь статьями 7 и 25 Закона Республики Казахстан «О счастье и дружбе»,
-      Верховный Суд Счастья в лице судьи АЛУА постановил:<br><br>
-
-      🎂 Признать день рождения гражданки <strong>Алуа</strong> общенациональным праздником радости;<br>
-      💫 Освободить её от всех скучных дел, дедлайнов и тревог на ближайшие 365 дней;<br>
-      ☕ Назначить ежедневную дозу кофе, любви и вдохновения в качестве профилактической меры против хандры;<br>
-      ❤️ Вынести благодарность свидетелю Нурали за неоспоримые доказательства счастья.<br><br>
-
-      Настоящее постановление вступает в силу немедленно и подлежит исполнению в форме <strong>веселья и улыбок</strong>.
-    </p>
-
-    <div class="seal">
-      <p>Печать: ☀ Республика Казахстан — Суд Счастья</p>
-      <p class="signature">Судья: <strong>Алуа</strong></p>
-      <p class="signature">Свидетель: <strong>Нурали</strong></p>
+<div class="wrap">
+  <div class="card">
+    <div class="progress" aria-label="Прогресс">
+      <div id="bar" class="bar"></div>
     </div>
+
+    <!-- СЦЕНА 1 — вступление -->
+    <section id="scene1">
+      <div class="dialog">
+        <div class="say"><span class="role">Судья Алуа:</span> Заседание объявляется открытым. Предмет слушания: почему сегодня обязано быть самым счастливым днём? 😉</div>
+        <div class="say"><span class="role">Нурали:</span> Готов представить доказательства. Предупреждаю: в материалах дела возможны излишки милоты и кофе.</div>
+      </div>
+
+      <div class="panel">
+        <div class="hint">Выберите линию защиты (можно все по очереди):</div>
+        <button class="btn row" data-choice="compliment">📝 Характеристика именинницы</button>
+        <button class="btn row" data-choice="data">📊 Data-доказательства</button>
+        <button class="btn row" data-choice="human">💬 Человечность & небольшая неловкость</button>
+
+        <div id="choiceBox" class="note"></div>
+      </div>
+
+      <div class="row-actions">
+        <button id="objection" class="btn ghost">⚡ Возражение!</button>
+        <button id="order" class="btn ghost">🔔 Порядок в суде</button>
+        <button id="next1" class="btn">Продолжить к доказательствам →</button>
+      </div>
+    </section>
+
+    <!-- СЦЕНА 2 — мини-игра с доказательствами -->
+    <section id="scene2" style="display:none">
+      <div class="flex">
+        <div class="half panel">
+          <div class="hint">Соберите 3 из 5 “улик” (кликните по карточкам):</div>
+          <div id="grid" class="evidence-grid">
+            <div class="ev" data-id="1">☕ Эспрессо-алibi <small>без кофе день не считается</small></div>
+            <div class="ev" data-id="2">📚 Гражданско-правовой код <small>любимый раздел — “радость”</small></div>
+            <div class="ev" data-id="3">😂 Юмор-прецедент <small>смех против скуки</small></div>
+            <div class="ev" data-id="4">📈 Индекс счастья <small>неприлично высок</small></div>
+            <div class="ev" data-id="5">💌 Письмо от Нурали <small>конфиденциально милое</small></div>
+          </div>
+          <div class="note" id="evNote">0/3 собрано</div>
+        </div>
+
+        <div class="half panel">
+          <div class="dialog" id="dialog2">
+            <div class="say"><span class="role">Судья Алуа:</span> Напоминаю: быстро, чётко и с улыбкой.</div>
+            <div class="say"><span class="role">Нурали:</span> Приму на себя смелость быть обаятельно убедительным.</div>
+          </div>
+          <div class="row-actions">
+            <button id="btnCharm" class="btn ghost">🙂 Убедить с улыбкой</button>
+            <button id="btnNerd" class="btn ghost">🤓 Уйти в графики</button>
+            <button id="btnCute" class="btn ghost">🐻 Добавить милоты</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px; display:flex; gap:10px; justify-content:flex-end;">
+        <button id="back1" class="btn ghost">← Назад</button>
+        <button id="next2" class="btn" disabled>К оглашению приговора →</button>
+      </div>
+    </section>
+
+    <!-- СЦЕНА 3 — приговор и подарок -->
+    <section id="scene3" style="display:none">
+      <div class="verdict" id="verdictBox">
+        <h3>⚖️ ОФИЦИАЛЬНЫЙ ПРИГОВОР</h3>
+        <p>
+          Рассмотрев материалы дела, выслушав свидетеля-эксперта Нурали и тщательно оценив уровень улыбок Судьи Алуа,
+          Суд счастья постановил:<br><br>
+          • Признать день рождения <b>Алуа</b> праздником государственного значения для круга близких лиц;<br>
+          • Назначить ежедневную норму кофе и объятий в качестве профилактической меры от скуки;<br>
+          • Улыбкам — быть, дедлайнам — подождать, счастью — немедленно вступить в силу.
+        </p>
+        <div class="seal">Печать: ☀ Республика радости • Подписи: Алуа / Нурали</div>
+      </div>
+
+      <div class="gift" id="gift">
+        <button id="giftBtn" class="btn">🎁 Открыть подарок</button>
+        <div id="giftMsg" class="type"></div>
+        <div style="margin-top:10px;">
+          <button id="replay" class="btn ghost" style="display:none">↺ Пройти ещё раз</button>
+        </div>
+      </div>
+    </section>
+
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<!-- libs -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <script>
-    const dialogueText = [
-      "Судья Алуа: Заседание Верховного Суда Счастья объявляется открытым.",
-      "Сегодня мы рассматриваем дело «Народ против Скучных Дней Рождения».",
-      "Свидетель Нурали: Уважаемый суд, у меня есть неопровержимые доказательства, что этот день — исключительный!",
-      "Судья: Какие именно доказательства?",
-      "Нурали: Мои алгоритмы машинного обучения показали 100% вероятность счастья 🎯",
-      "Судья: Суд просит предъявить доказательства."
-    ];
+<script>
+  // ===== общая логика сцен/прогресса =====
+  const bar = document.getElementById('bar');
+  const S1 = document.getElementById('scene1');
+  const S2 = document.getElementById('scene2');
+  const S3 = document.getElementById('scene3');
 
-    const dialogueDiv = document.getElementById("dialogue");
-    const startBtn = document.getElementById("startBtn");
-    const chartContainer = document.getElementById("chartContainer");
-    const verdictDiv = document.getElementById("verdict");
-    const verdictBtn = document.getElementById("verdictBtn");
+  function setProgress(p){ bar.style.width = p + '%'; }
 
-    startBtn.onclick = async () => {
-      startBtn.style.display = "none";
-      dialogueDiv.style.display = "block";
-      for (let line of dialogueText) {
-        await typeLine(line);
-        await new Promise(r => setTimeout(r, 600));
-      }
-      const showChartBtn = document.createElement("button");
-      showChartBtn.innerText = "Показать доказательства 📊";
-      showChartBtn.onclick = showChart;
-      dialogueDiv.appendChild(showChartBtn);
-    };
+  // ===== Сцена 1: выборы и живые ответы =====
+  const choiceBox = document.getElementById('choiceBox');
+  const starters = {
+    compliment:
+      "📌 Характеристика: ответственная, остроумная, умеет спорить по делу и обнимать по делу тоже. Тот самый человек, рядом с которым даже кофе раскрывает букет.",
+    data:
+      "📌 Data-доказательства: модель градиентного буста предсказала 100% вероятность улыбок. P-value — смешно мал; доверительный интервал — «ммм, да».",
+    human:
+      "📌 Человечность: я волнуюсь, потому что очень хочу, чтобы тебе понравилось. Если что — у меня есть план Б: шоколадка и глупая шутка."
+  };
 
-    async function typeLine(line) {
-      const p = document.createElement("p");
-      dialogueDiv.appendChild(p);
-      for (let i = 0; i < line.length; i++) {
-        p.textContent += line[i];
-        await new Promise(r => setTimeout(r, 25));
-      }
-    }
+  document.querySelectorAll('#scene1 [data-choice]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const key = btn.dataset.choice;
+      choiceBox.innerText = starters[key];
+      bumpProgress(10);
+    });
+  });
 
-    function showChart() {
-      chartContainer.style.display = "block";
-      const ctx = document.getElementById('chart');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ['Дружба', 'Ящерка', 'Юмор', 'Споры', 'Ночные доёбы :D'],
-          datasets: [{
-            label: 'Индекс Счастья',
-            data: [80, 90, 96, 99, 100],
-            borderColor: '#005fa3',
-            borderWidth: 2,
-            fill: false,
-            tension: 0.4,
-          }]
-        },
-        options: {
-          scales: { y: { min: 0, max: 110 } },
-          plugins: { legend: { display: false } }
+  const objection = document.getElementById('objection');
+  const order = document.getElementById('order');
+  const next1 = document.getElementById('next1');
+
+  objection.addEventListener('click', ()=>{
+    toast("Возражение принято. Но против хорошего настроения возражать... сомнительная стратегия 😉");
+    bumpProgress(5);
+  });
+  order.addEventListener('click', ()=>{
+    toast("🔔 Порядок в суде восстановлен. Порядок в мыслях — после кофе.");
+    bumpProgress(5);
+  });
+  next1.addEventListener('click', ()=>{
+    S1.style.display='none'; S2.style.display='block'; setProgress(40);
+  });
+
+  // ===== Сцена 2: мини-игра =====
+  const grid = document.getElementById('grid');
+  const evNote = document.getElementById('evNote');
+  const next2 = document.getElementById('next2');
+  const dialog2 = document.getElementById('dialog2');
+  const back1 = document.getElementById('back1');
+  const btnCharm = document.getElementById('btnCharm');
+  const btnNerd = document.getElementById('btnNerd');
+  const btnCute = document.getElementById('btnCute');
+
+  let collected = new Set();
+
+  grid.querySelectorAll('.ev').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const id = card.dataset.id;
+      if (!collected.has(id)) {
+        collected.add(id);
+        card.classList.add('found');
+        evNote.textContent = `${collected.size}/3 собрано`;
+        bumpProgress(8);
+        if (collected.size >= 3) {
+          next2.disabled = false;
+          toast("Доказательств достаточно. Суд просит перейти к приговору.");
         }
-      });
-    }
-
-    verdictBtn.onclick = () => {
-      chartContainer.style.display = "none";
-      verdictDiv.style.display = "block";
-      for (let i = 0; i < 15; i++) {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
+      } else {
+        toast("Эта улика уже в деле 📁");
       }
-    };
-  </script>
+    });
+  });
+
+  btnCharm.addEventListener('click', ()=> addLine("Нурали", "Ваша честь, обещаю не злоупотреблять статистикой. Только факт: вы умеете делать дни теплее."));
+  btnNerd.addEventListener('click', ()=> addLine("Нурали", "Если построить регрессию счастья от объёма кофе, коэффициент при 'Алуа' — максимально значим 😌"));
+  btnCute.addEventListener('click', ()=> addLine("Судья Алуа", "Протокол: милота засчитана. Продолжайте, но без перегиба."));
+
+  back1.addEventListener('click', ()=>{ S2.style.display='none'; S1.style.display='block'; setProgress(25); });
+  next2.addEventListener('click', ()=>{
+    S2.style.display='none'; S3.style.display='block'; setProgress(70);
+    // показать приговор, потом подарок
+    document.getElementById('verdictBox').style.display='block';
+    setTimeout(()=> {
+      document.getElementById('gift').style.display='block';
+      setProgress(85);
+    }, 800);
+  });
+
+  function addLine(role, text){
+    const p = document.createElement('div');
+    p.className='say';
+    p.innerHTML = `<span class="role">${role}:</span> ${text}`;
+    dialog2.appendChild(p);
+    dialog2.scrollTop = dialog2.scrollHeight;
+    bumpProgress(4);
+  }
+
+  // ===== Сцена 3: подарок с анимацией =====
+  const giftBtn = document.getElementById('giftBtn');
+  const giftMsg = document.getElementById('giftMsg');
+  const replay = document.getElementById('replay');
+
+  giftBtn.addEventListener('click', async ()=>{
+    giftBtn.disabled = true;
+    fireConfettiBurst();
+    floatingHearts();
+    await type(giftMsg,
+`Алуа, официальный вердикт прост:
+
+• Счастье — немедленно к исполнению.
+• Кофе — по первому требованию.
+• Улыбки — без ограничений.
+• Объятия — unlimited.
+
+Спасибо, что ты есть. 
+— Нурали ❤️`);
+    setProgress(100);
+    replay.style.display='inline-block';
+  });
+
+  replay.addEventListener('click', ()=>{
+    window.scrollTo({top:0, behavior:'smooth'});
+    // сброс
+    collected.clear();
+    document.querySelectorAll('.ev').forEach(e=>e.classList.remove('found'));
+    evNote.textContent = '0/3 собрано';
+    choiceBox.textContent='';
+    document.getElementById('giftMsg').textContent='';
+    document.getElementById('gift').style.display='none';
+    document.getElementById('verdictBox').style.display='none';
+    next2.disabled = true; giftBtn.disabled=false;
+    S3.style.display='none'; S1.style.display='block'; setProgress(0);
+  });
+
+  // ===== утилиты =====
+  function bumpProgress(delta){
+    const cur = parseInt(bar.style.width) || 0;
+    const next = Math.min(100, cur + delta);
+    setProgress(next);
+  }
+
+  function toast(msg){
+    const el = document.createElement('div');
+    el.textContent = msg;
+    el.style.position='fixed';
+    el.style.left='50%'; el.style.bottom='24px'; el.style.transform='translateX(-50%)';
+    el.style.background='#0f172a'; el.style.color='#fff'; el.style.padding='10px 14px';
+    el.style.borderRadius='10px'; el.style.boxShadow='0 6px 18px rgba(0,0,0,.25)';
+    el.style.fontSize='.95rem'; el.style.zIndex=99; el.style.opacity='0';
+    document.body.appendChild(el);
+    requestAnimationFrame(()=>{ el.style.transition='opacity .2s'; el.style.opacity='1'; });
+    setTimeout(()=>{ el.style.opacity='0'; setTimeout(()=>el.remove(), 200); }, 1800);
+  }
+
+  async function type(node, text){
+    node.textContent='';
+    for (let i=0;i<text.length;i++){
+      node.textContent += text[i];
+      await new Promise(r=>setTimeout(r, 20));
+    }
+  }
+
+  function fireConfettiBurst(){
+    for(let i=0;i<8;i++){
+      confetti({ particleCount: 80, spread: 70, startVelocity: 45, origin: { y: 0.7, x: 0.5 } });
+    }
+  }
+
+  function floatingHearts(){
+    const emojis = ['💙','💛','💖','💫','✨','💙','💛','💖'];
+    for(let i=0;i<24;i++){
+      const s = document.createElement('div');
+      s.className='heart'; s.textContent = emojis[i%emojis.length];
+      s.style.left = (Math.random()*92+4) + 'vw';
+      s.style.animationDuration = (4 + Math.random()*3)+'s';
+      s.style.fontSize = (18 + Math.random()*14)+'px';
+      document.body.appendChild(s);
+      setTimeout(()=>s.remove(), 7000);
+    }
+  }
+</script>
 </body>
 </html>

@@ -3,276 +3,293 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Дело о счастье — интерактивное поздравление</title>
-
-<meta name="description" content="Интерактивное поздравление для Алуа от Нурали: тёплые «улики», приговор и подарок.">
-<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Emblem_of_Kazakhstan_gold.svg/64px-Emblem_of_Kazakhstan_gold.svg.png">
-
+<title>Дело о Счастье — Спор Алуа vs Нурали</title>
+<meta name="description" content="Игровое поздравление: спор Алуа vs Нурали под присмотром Судьи. Победа — это поздравление и подарок ❤️">
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='64' width='64'%3E%3Ctext y='48' x='6' font-size='48'%3E⚖️%3C/text%3E%3C/svg%3E">
 <style>
   :root{
-    --ink:#1c2c3b; --muted:#5c6a79; --line:#e4e9ef; --bg:#f7f9fb; --brand:#0b6cff; --ok:#2ea44f;
+    --ink:#182435; --muted:#5c6a79; --line:#e4e9ef; --bg:#f7f9fb;
+    --brand:#0b6cff; --ok:#2ea44f; --warn:#ffaf38; --bad:#e45757;
   }
   *{box-sizing:border-box}
-  body{margin:0; background:linear-gradient(#fdfcf9,var(--bg)); color:var(--ink); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
-  .wrap{max-width:900px; margin:36px auto; padding:0 16px;}
-  h1{font-family:Merriweather,serif; margin:0 0 6px; letter-spacing:.2px;}
-  .lead{color:var(--muted); margin:0 0 18px}
-  .card{background:#fff; border:1px solid var(--line); border-radius:14px; box-shadow:0 10px 26px rgba(18,38,63,.06); padding:18px;}
-  .btn{appearance:none; border:0; background:var(--brand); color:#fff; padding:12px 18px; border-radius:10px; font-weight:600; cursor:pointer; transition:.18s; box-shadow:0 6px 18px rgba(11,108,255,.18)}
+  body{margin:0;background:linear-gradient(#fdfcf9,var(--bg));color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:960px;margin:32px auto;padding:0 16px}
+  header.card{text-align:center}
+  h1{font-family:Merriweather,serif;margin:0 0 6px}
+  .lead{color:var(--muted);margin:0 0 18px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 26px rgba(18,38,63,.06);padding:18px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{appearance:none;border:0;background:var(--brand);color:#fff;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;transition:.18s;box-shadow:0 6px 18px rgba(11,108,255,.18)}
   .btn:hover{transform:translateY(-1px)}
-  .btn.ghost{background:#fff; color:var(--brand); border:1.5px solid var(--brand); box-shadow:none}
-  .btn.soft{background:#eef3ff; color:#123; border:1px solid #d6e2ff}
-  .row{display:flex; gap:10px; flex-wrap:wrap}
-  .hint{color:var(--muted); font-size:.95rem}
-  .space{height:14px}
-  .divider{height:1px; background:var(--line); margin:18px 0}
-
-  /* сценография */
+  .btn.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand);box-shadow:none}
+  .btn.warn{background:var(--warn);color:#1b1405}
+  .btn.success{background:var(--ok)}
+  .btn.bad{background:var(--bad)}
+  .hint{color:var(--muted);font-size:.95rem}
+  .divider{height:1px;background:var(--line);margin:14px 0}
   .scene{display:none}
-  .scene.active{display:block; animation:fade .35s ease}
-  @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:translateY(0)}}
-
-  /* карточки-улики */
-  .grid{display:grid; grid-template-columns:repeat(2,minmax(250px,1fr)); gap:12px}
-  .clue{
-    border:1.5px solid var(--line); border-radius:12px; padding:14px; background:#fff;
-    cursor:pointer; transition:.15s; position:relative;
-  }
-  .clue:hover{transform:translateY(-1px)}
-  .clue h4{margin:0 0 6px; font-size:1rem}
-  .clue p{margin:0; color:var(--muted); font-size:.95rem}
-  .clue.checked{border-color:var(--ok); background:#f1fbf4}
-  .badge{
-    position:absolute; top:10px; right:10px; background:#fff; border:1px solid var(--line);
-    padding:3px 7px; border-radius:999px; font-size:.8rem; color:#4c5b6a;
-  }
-
-  /* «протокол» */
-  .log{background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px; max-height:180px; overflow:auto}
-  .say{padding:8px 10px; border-left:3px solid #dde4ec; border-radius:8px; margin:6px 0}
-  .role{font-weight:700; margin-right:6px; color:#0b3b6c}
-
-  /* приговор и подарок */
-  .verdict{background:#fff; border:2px solid var(--line); border-radius:12px; padding:18px}
-  .type{white-space:pre-wrap; font-family:inherit; line-height:1.6; margin-top:12px}
-  .progress{height:10px; background:#eef2f7; border-radius:999px; border:1px solid var(--line); overflow:hidden}
-  .bar{height:100%; width:0; background:linear-gradient(90deg,var(--brand),#43a1ff); transition:width .5s ease}
-
+  .scene.active{display:block;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)}}
+  .progress{height:12px;background:#eef2f7;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+  .bar{height:100%;width:0;background:linear-gradient(90deg,var(--brand),#43a1ff);transition:width .45s ease}
+  .judge, .log{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+  .say{padding:8px 10px;border-left:3px solid #dde4ec;border-radius:8px;margin:6px 0}
+  .role{font-weight:700;margin-right:6px;color:#0b3b6c}
+  .choices{display:grid;grid-template-columns:repeat(1,minmax(220px,1fr));gap:10px}
+  @media (min-width:720px){ .choices{grid-template-columns:repeat(3,1fr)} }
+  .choice{border:1.5px solid var(--line);border-radius:12px;padding:12px;background:#fff;cursor:pointer;transition:.15s;text-align:left}
+  .choice:hover{transform:translateY(-1px)}
+  .choice.good{border-color:var(--ok);background:#f1fbf4}
+  .choice.bad{border-color:#ffd6d6;background:#fff7f7}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.25);font-size:.95rem;z-index:999;opacity:0}
+  .type{white-space:pre-wrap;line-height:1.6;margin-top:12px}
   /* сердечки */
-  .heart{position:fixed; bottom:-40px; font-size:22px; animation:float 6s linear forwards; pointer-events:none}
+  .heart{position:fixed;bottom:-40px;font-size:22px;animation:float 6s linear forwards;pointer-events:none}
   @keyframes float{from{transform:translateY(0)} to{transform:translateY(-120vh)}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header class="card" style="text-align:center">
+  <header class="card">
     <h1>Дело о счастье</h1>
-    <p class="lead">Интерактивное поздравление для <b>Алуа</b> от <b>Нурали</b></p>
-    <div class="progress" aria-label="Прогресс">
+    <p class="lead">Спор <b>Алуа</b> vs <b>Нурали</b> под надзором независимого Судьи</p>
+    <div class="progress" aria-label="Прогресс дела">
       <div id="bar" class="bar"></div>
     </div>
-    <div class="space"></div>
-    <button id="start" class="btn">Начать слушание</button>
+    <div style="height:12px"></div>
+    <div class="row" style="justify-content:center">
+      <button id="startBtn" class="btn">Начать спор</button>
+      <button id="bribeBtn" class="btn warn" title="Кофе Судье и комплимент 😉" style="display:none">Подкупить судью ☕</button>
+    </div>
   </header>
 
   <!-- СЦЕНА 1: вступление -->
   <section id="s1" class="scene active">
     <div class="card">
-      <p class="hint">Небольшая прелюдия. Нажмите «Начать слушание», и сайт мягко проведёт вас по шагам.</p>
-      <div class="divider"></div>
       <div class="log" id="log1" aria-live="polite">
-        <div class="say"><span class="role">Нурали:</span> Алуа, привет! Я оставил для тебя небольшой интерактив — ничего сложного, просто немного тепла и улыбок.</div>
-        <div class="say"><span class="role">Нурали:</span> Здесь нет правил. Жми на то, что нравится. В конце — подарок 🎁</div>
+        <div class="say"><span class="role">Судья:</span> Объявляю слушание открытым. Предмет спора: «Чья позиция сильнее — логика Нурали или очарование Алуа?»</div>
+        <div class="say"><span class="role">Нурали:</span> Готов выдвигать доводы. Прошу соблюдать процессуальный кофе-порядок.</div>
+        <div class="say"><span class="role">Судья:</span> Алуа, ваша задача — выбирать лучший контраргумент из предложенных. Удачный ответ повышает шкалу победы.</div>
       </div>
+      <div class="divider"></div>
+      <p class="hint">Нажмите «Начать спор», чтобы перейти к раундам.</p>
     </div>
   </section>
 
-  <!-- СЦЕНА 2: улики (милые карточки) -->
+  <!-- СЦЕНА 2: раунды -->
   <section id="s2" class="scene">
     <div class="card">
-      <h3 style="margin:0 0 6px">Доказательства по делу «Алуа против скуки»</h3>
-      <p class="hint">Нажмите на любые карточки — это короткие тёплые «улики». После пары кликов можно перейти к приговору.</p>
-      <div class="space"></div>
-      <div id="grid" class="grid">
-        <div class="clue" data-id="1">
-          <span class="badge">№1</span>
-          <h4>🌸 Улыбка — доказательство счастья</h4>
-          <p>Официально признана средством мгновенного улучшения дня окружающих.</p>
-        </div>
-        <div class="clue" data-id="2">
-          <span class="badge">№2</span>
-          <h4>📚 Справедливость — твой талант</h4>
-          <p>Даже Гражданский кодекс позавидовал бы твоей чёткости и доброте.</p>
-        </div>
-        <div class="clue" data-id="3">
-          <span class="badge">№3</span>
-          <h4>☕ Кофе — уличающее алиби</h4>
-          <p>С кофе ты опасно обаятельна и точно не способна на скуку.</p>
-        </div>
-        <div class="clue" data-id="4">
-          <span class="badge">№4</span>
-          <h4>💬 Юмор — смягчающее обстоятельство</h4>
-          <p>Твои шутки отменяют любые хмурые приговоры.</p>
-        </div>
-        <div class="clue" data-id="5">
-          <span class="badge">№5</span>
-          <h4>💡 Ум — вещественное доказательство</h4>
-          <p>Аргументы по делу у тебя такие же сильные, как и характер.</p>
-        </div>
-        <div class="clue" data-id="6">
-          <span class="badge">№6</span>
-          <h4>🤝 Забота — прецедент</h4>
-          <p>С тобой рядом люди становятся увереннее. Это уже практика.</p>
-        </div>
+      <div class="judge" id="roundBox">
+        <!-- раунд вставится скриптом -->
       </div>
-
-      <div class="space"></div>
-      <div class="row">
-        <button id="toVerdict" class="btn" disabled>Огласить приговор →</button>
-        <button id="moreClues" class="btn soft">Показать ещё пару карточек</button>
-        <button id="backIntro" class="btn ghost">← Назад</button>
+      <div class="divider"></div>
+      <div class="row" style="justify-content:space-between">
+        <button id="prevBtn" class="btn ghost" disabled>← Назад</button>
+        <button id="nextBtn" class="btn" disabled>Далее →</button>
       </div>
     </div>
   </section>
 
-  <!-- СЦЕНА 3: приговор -->
+  <!-- СЦЕНА 3: финал -->
   <section id="s3" class="scene">
-    <div class="card verdict">
-      <h3 style="margin:0 0 6px">Официальный приговор</h3>
-      <p>
-        Рассмотрев представленные «улики» и внутреннюю улыбку,
-        постановляем: признать сегодняшний день <b>днём радости</b> для Алуа,
-        дедлайнам — подождать, счастью — вступить в силу немедленно.
-      </p>
+    <div class="card">
+      <div class="log" id="finalLog">
+        <div class="say"><span class="role">Судья:</span> Шкала достигла 100%. Дело решено: <b>Победа Алуа</b> 🎉</div>
+        <div class="say"><span class="role">Нурали:</span> Сдаюсь… и с радостью оглашаю поздравление.</div>
+      </div>
       <div class="divider"></div>
-      <p class="hint">Теперь самое приятное — подарок.</p>
-      <div class="row">
-        <button id="openGift" class="btn">🎁 Открыть подарок</button>
-        <button id="replay" class="btn ghost">↺ Пройти ещё раз</button>
+      <div class="row" style="justify-content:flex-start">
+        <button id="giftBtn" class="btn success">🎁 Получить поздравление</button>
+        <button id="replayBtn" class="btn ghost">↺ Начать заново</button>
       </div>
       <div id="giftText" class="type"></div>
     </div>
   </section>
 </div>
 
+<!-- libs -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
-  // элементы
-  const bar = document.getElementById('bar');
+  // ===== Данные раундов =====
+  const ROUNDS = [
+    {
+      nuraly: "Мой довод №1: цифры не врут. Логика — мой верный союзник.",
+      options: [
+        { text: "Моя улыбка лучезарна — логика здесь просто отдыхает.", good: true, delta: 25 },
+        { text: "Опровергну цифры… пирожком? (Не лучший план)", good: false, delta: 8 },
+        { text: "А судья в курсе, что я милее ваших формул?", good: false, delta: 12 },
+      ],
+      judgeGood: "Аргумент принят! Уровень очарования растёт.",
+      judgeBad:  "Хм… забавно, но слабовато. Немного очков за креатив."
+    },
+    {
+      nuraly: "Мой довод №2: факты упрямы — дедлайны не ждут.",
+      options: [
+        { text: "Счастье важнее дедлайнов. Сегодня праздник — факты подождут.", good: true, delta: 25 },
+        { text: "Упрямство фактов лечится тортом. Много тортом.", good: false, delta: 10 },
+        { text: "Прошу приобщить кофе к материалам дела.", good: false, delta: 12 },
+      ],
+      judgeGood: "Принято! У праздника есть процессуальный приоритет.",
+      judgeBad:  "Симпатично, но неубедительно. +чуть-чуть за юмор."
+    },
+    {
+      nuraly: "Мой довод №3: статистика показывает…",
+      options: [
+        { text: "Моя статистика простая: люди рядом со мной чаще улыбаются ☺️", good: true, delta: 25 },
+        { text: "Статистика — это когда много цифр и мало счастья.", good: false, delta: 10 },
+        { text: "Если что — у меня невероятно убедительный котик.", good: false, delta: 12 },
+      ],
+      judgeGood: "Это серьёзно. Показатель улыбаемости никто не отменял.",
+      judgeBad:  "Мило, но котик — не универсальный аргумент. +немного."
+    },
+    {
+      nuraly: "Мой довод №4: итоговая модель предсказывает 99.9% моей правоты.",
+      options: [
+        { text: "Оставшиеся 0.1% — это моя магия. И сегодня — мой день.", good: true, delta: 25 },
+        { text: "Предсказываю кофе-брейк — прямо сейчас.", good: false, delta: 10 },
+        { text: "Вы когда-нибудь спорили с моими ямочками на щеках?", good: false, delta: 12 },
+      ],
+      judgeGood: "Неоспоримо. Магия 0.1% закрывает спор.",
+      judgeBad:  "Забавно, но мало оснований. Немного баллов — за очарование."
+    }
+  ];
+
+  // ===== Состояние =====
+  let roundIndex = 0;
+  let progress = 0;
+  let roundAnswered = false;
+  let bribeCooldown = false;
+
+  // ===== DOM =====
   const s1 = document.getElementById('s1');
   const s2 = document.getElementById('s2');
   const s3 = document.getElementById('s3');
-  const startBtn = document.getElementById('start');
-  const grid = document.getElementById('grid');
-  const toVerdict = document.getElementById('toVerdict');
-  const backIntro = document.getElementById('backIntro');
-  const moreClues = document.getElementById('moreClues');
-  const openGift = document.getElementById('openGift');
-  const replay = document.getElementById('replay');
+  const bar = document.getElementById('bar');
+  const startBtn = document.getElementById('startBtn');
+  const bribeBtn = document.getElementById('bribeBtn');
+  const roundBox = document.getElementById('roundBox');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const giftBtn = document.getElementById('giftBtn');
+  const replayBtn = document.getElementById('replayBtn');
   const giftText = document.getElementById('giftText');
 
-  let opened = 0;
-  function setProgress(p){ bar.style.width = p + '%'; }
-
-  // навигация
-  function show(scene){
-    [s1,s2,s3].forEach(el=>el.classList.remove('active'));
-    scene.classList.add('active');
+  // ===== Навигация =====
+  function show(el){ [s1,s2,s3].forEach(x=>x.classList.remove('active')); el.classList.add('active'); }
+  function setProgress(p){ progress = Math.max(0, Math.min(100, p)); bar.style.width = progress + '%'; if(progress<100) bribeBtn.style.display='inline-block'; }
+  function toast(msg){
+    const el = document.createElement('div'); el.className='toast'; el.textContent=msg; document.body.appendChild(el);
+    requestAnimationFrame(()=>{ el.style.transition='opacity .2s'; el.style.opacity='1'; });
+    setTimeout(()=>{ el.style.opacity='0'; setTimeout(()=>el.remove(), 200); }, 1800);
   }
 
   startBtn.addEventListener('click', ()=>{
     show(s2);
-    setProgress(35);
+    setProgress(5);
+    renderRound();
   });
 
-  backIntro.addEventListener('click', ()=>{
-    show(s1);
-    setProgress(15);
+  prevBtn.addEventListener('click', ()=>{
+    if(roundIndex>0){ roundIndex--; renderRound(true); }
   });
 
-  toVerdict.addEventListener('click', ()=>{
-    show(s3);
-    setProgress(70);
-  });
-
-  // улики
-  grid.addEventListener('click', (e)=>{
-    const el = e.target.closest('.clue');
-    if(!el) return;
-    if(!el.classList.contains('checked')){
-      el.classList.add('checked');
-      opened++;
-      setProgress(Math.min(65, 35 + opened*8));
-      if(opened >= 2) toVerdict.disabled = false; // достаточно пары кликов
-      floatHeart(el);
+  nextBtn.addEventListener('click', ()=>{
+    if(progress>=100){ finish(); return; }
+    if(roundIndex < ROUNDS.length-1){ roundIndex++; renderRound(); }
+    else {
+      // все раунды сыграны — если ещё нет 100%, мягко подтолкнём к финалу
+      if(progress>=90){ setProgress(100); finish(); }
+      else { toast("Ещё немного очков — и победа будет за Алуа!"); }
     }
   });
 
-  moreClues.addEventListener('click', ()=>{
-    // добавить дополнительно две «милоты»
-    const extras = [
-      {t:"🎀 Тёплое присутствие", d:"С тобой просто хорошо — это лучший аргумент."},
-      {t:"✨ Маленькие радости", d:"Ты умеешь замечать их и делиться ими щедро."}
-    ];
-    extras.forEach((x,i)=>{
-      const card = document.createElement('div');
-      card.className = 'clue';
-      card.innerHTML = `<span class="badge">+${i+1}</span><h4>${x.t}</h4><p>${x.d}</p>`;
-      grid.appendChild(card);
-    });
-    moreClues.disabled = true;
+  bribeBtn.addEventListener('click', ()=>{
+    if(bribeCooldown) return;
+    bribeCooldown = true;
+    setTimeout(()=> bribeCooldown=false, 3000);
+    setProgress(progress + 20);
+    toast("Судья: «Хм… кофе убедителен. Пересматриваю оценку в пользу Алуа 😌»");
+    if(progress>=100) finish();
   });
 
-  // подарок
-  openGift.addEventListener('click', async ()=>{
-    openGift.disabled = true;
-    fireConfetti();
-    floatingHearts();
-    setProgress(90);
-    await typeWriter(giftText,
-`Алуа, вот и финал моего маленького дела.
+  // ===== Рендер раунда =====
+  function renderRound(backward=false){
+    const r = ROUNDS[roundIndex];
+    roundAnswered = false;
+    nextBtn.disabled = true;
+    prevBtn.disabled = (roundIndex===0);
 
+    roundBox.innerHTML = `
+      <div class="say"><span class="role">Нурали:</span> ${r.nuraly}</div>
+      <div class="divider"></div>
+      <div class="hint">Алуа, выберите ответ:</div>
+      <div class="choices" id="choices"></div>
+    `;
+    const choices = document.getElementById('choices');
+    r.options.forEach((opt, i)=>{
+      const btn = document.createElement('button');
+      btn.className='choice';
+      btn.innerHTML = `<b>${opt.text}</b>`;
+      btn.addEventListener('click', ()=>{
+        if(roundAnswered) return;
+        roundAnswered = true;
+        btn.classList.add(opt.good?'good':'bad');
+
+        // реакция судьи + очки
+        if(opt.good){
+          setProgress(progress + opt.delta);
+          toast(r.judgeGood);
+          ding(true);
+        } else {
+          setProgress(progress + opt.delta);
+          toast(r.judgeBad);
+          ding(false);
+        }
+        nextBtn.disabled = false;
+
+        if(progress>=100){ finish(); }
+      });
+      choices.appendChild(btn);
+    });
+
+    // при возврате назад — небольшой откат прогресса (мягкий)
+    if(backward){ setProgress(progress - 5); }
+  }
+
+  // ===== Финал =====
+  function finish(){
+    show(s3);
+    fireConfetti();
+    setTimeout(()=>fireConfetti(), 400);
+    setTimeout(()=>fireConfetti(), 900);
+  }
+
+  giftBtn.addEventListener('click', async ()=>{
+    giftBtn.disabled = true;
+    floatingHearts();
+    await typeWriter(giftText,
+`Алуа, официально признаю твою Победу в споре ❤️
+
+• Твоя улыбка сильнее любых аргументов.
 • Счастье — к немедленному исполнению.
 • Кофе — по первому требованию.
-• Улыбки — без ограничений.
-• Хорошие новости — регулярно.
+• Улыбки и объятия — без ограничений.
 
 Спасибо, что ты есть.
-— Нурали ❤️`);
+— Нурали`);
     setProgress(100);
   });
 
-  replay.addEventListener('click', ()=>{
+  replayBtn.addEventListener('click', ()=>{
     // сброс
-    opened = 0;
-    giftText.textContent = '';
-    openGift.disabled = false;
-    toVerdict.disabled = true;
-    moreClues.disabled = false;
-
-    // удалить добавленные extra-карточки
-    [...grid.querySelectorAll('.clue')].forEach(c=>c.remove());
-    // восстановить исходные
-    grid.insertAdjacentHTML('beforeend', `
-      <div class="clue" data-id="1"><span class="badge">№1</span><h4>🌸 Твоя улыбка — доказательство счастья</h4><p>Официально признана средством мгновенного улучшения дня окружающих.</p></div>
-      <div class="clue" data-id="2"><span class="badge">№2</span><h4>📚 Справедливость — твой талант</h4><p>Даже Гражданский кодекс позавидовал бы твоей чёткости и доброте.</p></div>
-      <div class="clue" data-id="3"><span class="badge">№3</span><h4>☕ Кофе — уличающее алиби</h4><p>С кофе ты опасно обаятельна и точно не способна на скуку.</p></div>
-      <div class="clue" data-id="4"><span class="badge">№4</span><h4>💬 Юмор — смягчающее обстоятельство</h4><p>Твои шутки отменяют любые хмурые приговоры.</p></div>
-      <div class="clue" data-id="5"><span class="badge">№5</span><h4>💡 Ум — вещественное доказательство</h4><p>Аргументы по делу у тебя такие же сильные, как и характер.</p></div>
-      <div class="clue" data-id="6"><span class="badge">№6</span><h4>🤝 Забота — прецедент</h4><p>С тобой рядом люди становятся увереннее. Это уже практика.</p></div>
-    `);
-
+    roundIndex = 0; setProgress(0); giftBtn.disabled = false; giftText.textContent = '';
     show(s1);
-    setProgress(0);
-    window.scrollTo({top:0, behavior:'smooth'});
   });
 
-  // утилиты
+  // ===== Эффекты =====
   function fireConfetti(){
-    for(let i=0;i<7;i++){
-      confetti({particleCount:80, spread:70, startVelocity:45, origin:{y:0.7}});
-    }
+    confetti({ particleCount: 90, spread: 70, startVelocity:45, origin:{ y: 0.7 } });
   }
   function floatingHearts(){
     const emojis=['💙','💛','💖','✨','💫','💙','💛','💖'];
@@ -286,22 +303,27 @@
       setTimeout(()=>s.remove(),7000);
     }
   }
-  function floatHeart(anchor){
-    const rect=anchor.getBoundingClientRect();
-    const h=document.createElement('div');
-    h.textContent='❤️'; h.className='heart';
-    h.style.left=(rect.left+rect.width/2)+'px';
-    h.style.bottom=(window.innerHeight-rect.top)+'px';
-    h.style.animationDuration='3s';
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),3200);
-  }
   async function typeWriter(node, text){
     node.textContent='';
     for(let i=0;i<text.length;i++){
       node.textContent += text[i];
       await new Promise(r=>setTimeout(r, 18));
     }
+  }
+  // маленький звуковой фидбек через WebAudio (без внешних файлов)
+  function ding(success=true){
+    try{
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type = success ? 'triangle':'sawtooth';
+      o.frequency.value = success ? 820 : 320;
+      g.gain.value = 0.00001; g.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime);
+      o.connect(g); g.connect(ctx.destination);
+      o.start();
+      g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+0.25);
+      o.stop(ctx.currentTime+0.3);
+    }catch(e){ /* тихий фолбэк */ }
   }
 </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Дело о Счастье — Спор Алуа vs Нурали</title>
+<title>Дело №25.10.2025 — Спор Алуа VS Нурали</title>
 <meta name="description" content="Игровое поздравление: спор Алуа vs Нурали под надзором Судьи. Победа — поздравление и подарок ❤️" />
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='64' width='64'%3E%3Ctext y='48' x='6' font-size='48'%3E🎷%3C/text%3E%3C/svg%3E" />
@@ -39,7 +39,7 @@
   .arena{display:grid;grid-template-columns:1fr;gap:12px}
   @media(min-width:840px){ .arena{grid-template-columns:1fr 1fr} }
   .avatar{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
-  .avatar img{width:110px;height:110px;object-fit:cover;border-radius:16px;border:1.5px solid var(--line);background:#f2f4f7;box-shadow:0 4px 10px rgba(0,0,0,.1)}
+  .avatar img{width:135px;height:135px;object-fit:cover;border-radius:18px;border:2px solid var(--line);background:#f2f4f7;box-shadow:0 6px 14px rgba(0,0,0,.12)}
   .bubble{padding:10px 12px;border-left:3px solid #dde4ec;border-radius:8px;background:#fff}
   .choices{display:grid;grid-template-columns:1fr;gap:10px}
   @media(min-width:720px){ .choices{grid-template-columns:repeat(3,1fr)} }
@@ -67,9 +67,9 @@
 
   <section id="s1" class="scene active">
     <div class="card">
-      <div class="bubble"><b>Судья:</b> Объявляю слушание открытым. Алуа, выбирайте лучшие контраргументы — удачные ответы приближают победу.</div>
+      <div class="bubble"><b>Судья:</b> Объявляю слушание открытым. Алуа, выбирайте лучшие контраргументы — удачные ответы приблизят победу. *Шёпотом*..кхе...но вы также можете меня подкупить, я из Кыргызстана...</div>
       <div class="divider"></div>
-      <div class="hint">Нажмите «Начать спор» — и музыка включится 🎷</div>
+      <div class="hint">Нажми «Начать спор» — и да начнётся магия 🎷</div>
     </div>
   </section>
 
@@ -78,7 +78,7 @@
       <div class="round-top"><div id="roundIndicator" class="round-indicator">Раунд 1 из 4</div></div>
       <div class="arena">
         <div class="avatar"><img id="nuralyImg"/><div class="bubble" id="nuralyLine"></div></div>
-        <div class="avatar"><img id="aluaImg"/><div class="bubble"><div class="hint">Выберите ответ:</div><div class="choices" id="choices"></div></div></div>
+        <div class="avatar"><img id="aluaImg"/><div class="bubble"><div class="hint">Выбери ответ:</div><div class="choices" id="choices"></div></div></div>
       </div>
       <div class="divider"></div>
       <div class="row" style="justify-content:space-between"><button id="prevBtn" class="btn ghost" disabled>← Назад</button><button id="nextBtn" class="btn" disabled>Далее →</button></div>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ВЕРХОВНЫЙ СУД СЧАСТЬЯ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@600&family=Roboto+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(#fdfcf9, #f5f8fa);
+      color: #1c2c3b;
+      font-family: 'Merriweather', serif;
+      margin: 0;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    header {
+      margin-top: 40px;
+    }
+
+    header img {
+      width: 100px;
+    }
+
+    h1 {
+      margin: 10px 0 5px;
+      font-size: 2.3rem;
+      letter-spacing: 0.5px;
+    }
+
+    h2 {
+      color: #005fa3;
+      font-weight: normal;
+      margin-bottom: 5px;
+    }
+
+    p {
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    button {
+      background: #005fa3;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 28px;
+      font-family: 'Roboto Mono', monospace;
+      margin-top: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #007acc;
+    }
+
+    #dialogue {
+      width: 80%;
+      max-width: 700px;
+      margin: 40px auto;
+      text-align: left;
+      white-space: pre-line;
+      font-family: 'Roboto Mono', monospace;
+      display: none;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    #chartContainer {
+      display: none;
+      margin-top: 40px;
+    }
+
+    canvas {
+      max-width: 500px;
+    }
+
+    #verdict {
+      display: none;
+      margin: 60px auto;
+      width: 85%;
+      max-width: 650px;
+      background: #fff;
+      border: 2px solid #cfcfcf;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: left;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      line-height: 1.6;
+    }
+
+    .seal {
+      text-align: right;
+      margin-top: 30px;
+      font-style: italic;
+    }
+
+    .signature {
+      font-family: 'Merriweather', serif;
+      font-size: 1.1rem;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Emblem_of_Kazakhstan_gold.svg/1200px-Emblem_of_Kazakhstan_gold.svg.png" alt="Kazakhstan Emblem">
+    <h1>ВЕРХОВНЫЙ СУД СЧАСТЬЯ</h1>
+    <h2>Дело №2025-10-25: Народ против Скучных Дней Рождения</h2>
+    <p>Председательствующий судья: <strong>Алуа</strong><br> Свидетель (Data Scientist): <strong>Нурали</strong></p>
+  </header>
+
+  <button id="startBtn">Начать заседание ⚖️</button>
+
+  <div id="dialogue"></div>
+
+  <div id="chartContainer">
+    <canvas id="chart"></canvas>
+    <button id="verdictBtn">Огласить приговор 📜</button>
+  </div>
+
+  <div id="verdict">
+    <h3>⚖️ ОФИЦИАЛЬНЫЙ ПРИГОВОР</h3>
+    <p>
+      Руководствуясь статьями 7 и 25 Закона Республики Казахстан «О счастье и дружбе»,
+      Верховный Суд Счастья в лице судьи АЛУА постановил:<br><br>
+
+      🎂 Признать день рождения гражданки <strong>Алуа</strong> общенациональным праздником радости;<br>
+      💫 Освободить её от всех скучных дел, дедлайнов и тревог на ближайшие 365 дней;<br>
+      ☕ Назначить ежедневную дозу кофе, любви и вдохновения в качестве профилактической меры против хандры;<br>
+      ❤️ Вынести благодарность свидетелю Нурали за неоспоримые доказательства счастья.<br><br>
+
+      Настоящее постановление вступает в силу немедленно и подлежит исполнению в форме <strong>веселья и улыбок</strong>.
+    </p>
+
+    <div class="seal">
+      <p>Печать: ☀ Республика Казахстан — Суд Счастья</p>
+      <p class="signature">Судья: <strong>Алуа</strong></p>
+      <p class="signature">Свидетель: <strong>Нурали</strong></p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    const dialogueText = [
+      "Судья Алуа: Заседание Верховного Суда Счастья объявляется открытым.",
+      "Сегодня мы рассматриваем дело «Народ против Скучных Дней Рождения».",
+      "Свидетель Нурали: Уважаемый суд, у меня есть неопровержимые доказательства, что этот день — исключительный!",
+      "Судья: Какие именно доказательства?",
+      "Нурали: Мои алгоритмы машинного обучения показали 100% вероятность счастья 🎯",
+      "Судья: Суд просит предъявить доказательства."
+    ];
+
+    const dialogueDiv = document.getElementById("dialogue");
+    const startBtn = document.getElementById("startBtn");
+    const chartContainer = document.getElementById("chartContainer");
+    const verdictDiv = document.getElementById("verdict");
+    const verdictBtn = document.getElementById("verdictBtn");
+
+    startBtn.onclick = async () => {
+      startBtn.style.display = "none";
+      dialogueDiv.style.display = "block";
+      for (let line of dialogueText) {
+        await typeLine(line);
+        await new Promise(r => setTimeout(r, 600));
+      }
+      const showChartBtn = document.createElement("button");
+      showChartBtn.innerText = "Показать доказательства 📊";
+      showChartBtn.onclick = showChart;
+      dialogueDiv.appendChild(showChartBtn);
+    };
+
+    async function typeLine(line) {
+      const p = document.createElement("p");
+      dialogueDiv.appendChild(p);
+      for (let i = 0; i < line.length; i++) {
+        p.textContent += line[i];
+        await new Promise(r => setTimeout(r, 25));
+      }
+    }
+
+    function showChart() {
+      chartContainer.style.display = "block";
+      const ctx = document.getElementById('chart');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Дружба', 'Кофе', 'Юмор', 'Данные', 'Любовь'],
+          datasets: [{
+            label: 'Индекс Счастья',
+            data: [80, 90, 96, 99, 100],
+            borderColor: '#005fa3',
+            borderWidth: 2,
+            fill: false,
+            tension: 0.4,
+          }]
+        },
+        options: {
+          scales: { y: { min: 0, max: 110 } },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    verdictBtn.onclick = () => {
+      chartContainer.style.display = "none";
+      verdictDiv.style.display = "block";
+      for (let i = 0; i < 15; i++) {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    };
+  </script>
+</body>
+</html>
